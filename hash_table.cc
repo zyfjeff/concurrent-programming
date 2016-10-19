@@ -28,14 +28,11 @@ void HashTable::SetItem(uint32_t key, uint32_t value) {
       if (prevKey != 0) {
         continue;
       }
-      
       bool succ = entry_[idx].key.compare_exchange_strong(zero, key, std::memory_order_relaxed);
       if (succ)
           goto out;
-
-      return;
+      continue;
     }
-
 out:    
     entry_[idx].value.store(value, std::memory_order_relaxed);
     return;
