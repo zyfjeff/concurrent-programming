@@ -14,15 +14,16 @@ struct Entry
 class HashTable
 {
  public:
-  HashTable(uint32_t arraysize = 64);
+  HashTable(uint32_t arraysize);
   ~HashTable();
   void SetItem(uint32_t key, uint32_t value);
   uint32_t GetItem(uint32_t key);
-
+  uint32_t Size();
  private:
   Entry* entry_;
-  uint32_t arraySize_;
- 
+  uint32_t arraySize_{64};
+  std::atomic<uint32_t> count_{0};
+
   DISALLOW_COPY_AND_ASSIGN(HashTable);
 };
 

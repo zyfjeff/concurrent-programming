@@ -20,6 +20,9 @@ HashTable::~HashTable() {
 }
   
 void HashTable::SetItem(uint32_t key, uint32_t value) {
+
+  assert(count_.load(std::memory_order_relaxed) < arraySize_);
+  
   uint32_t zero = 0;
   for (uint32_t idx = integerHash(key);; ++idx) {
     idx &= arraySize_ - 1;
@@ -35,6 +38,7 @@ void HashTable::SetItem(uint32_t key, uint32_t value) {
     }
 out:    
     entry_[idx].value.store(value, std::memory_order_relaxed);
+    count_.fetch_add(1,std::memory_order_relaxed);
     return;
   }
 }
@@ -52,3 +56,6 @@ uint32_t HashTable::GetItem(uint32_t key) {
   return 0;
 }
 
+uint32_t HashTable::Size() {
+  return count_.load(std::memory_order_relaxed);
+}
